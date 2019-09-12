@@ -23,28 +23,23 @@
     }
 
     :root {
-      --square-size: 9.6vmax;
+      --square-size: 6vmax;
+      --movement: calc(3 * var(--square-size));
+      --grid-size: calc(1000vmax + var(--movement));
     }
 
     .grid {
       background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADIAgMAAADQNkYNAAAACVBMVEUAAAAAAAD///+D3c/SAAAAAXRSTlMAQObYZgAAAEhJREFUaN7ty6ERACAQBDFe0B+GPukPQw1nED9Zvak90gppRO4J/rkQBEEQBEEQBEEQBEEQBEEQBEEQBEEQBEEQBPlE0pA25AFZ2atACPzWxQAAAABJRU5ErkJggg==);
       background-size: var(--square-size);
-      width: 300vmax;
-      height: 300vmax;
-      left: -100vmax;
-      top: -100vmax;
+      width: var(--grid-size);
+      height: var(--grid-size);
+      left: calc(-1 * var(--movement));
+      top: calc(-1 * var(--movement));
       right: 0;
+      bottom: 0;
       position: absolute;
-
+      animation: over-and-down 1.6s linear infinite;
       opacity: 0.99;
-      animation: over-and-down 2s linear infinite;
-    }
-
-    .size {
-      position: fixed;
-      top: 1em;
-      left: 1em;
-      z-index: 1;
     }
 
     @keyframes over-and-down {
@@ -52,51 +47,16 @@
         transform: translate3d(0, 0, 0);
       }
       45%, 50% {
-        transform: translate3d(calc(2 * var(--square-size)), 0, 0);
+        transform: translate3d(var(--movement), 0, 0);
       }
       95%, 100% {
-        transform: translate3d(calc(2 * var(--square-size)), calc(2 * var(--square-size)), 0);
+        transform: translate3d(var(--movement), var(--movement), 0);
       }
-    }    
+    }
+ 
   </style>
-  
-  <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
-  
 </head>
 <body>
   <div class="grid"></div>
-  <script>
-    var DEBUG = true
-
-    var myElement = document.body
-    var mc = new Hammer.Manager(myElement)
-    var pinch = new Hammer.Pinch()
-
-    // add to the Manager
-    mc.add([pinch])
-
-    var squareSize = currentSquareSize()
-
-    function currentSquareSize() {
-      var styles = getComputedStyle(document.documentElement)
-      var squareSizeValue = styles.getPropertyValue('--square-size')
-      return parseInt(squareSizeValue, 10)
-    }
-
-    mc.on("pinch", function(ev) {
-      var prev = currentSquareSize()
-      var minSquareSize = 1
-      var newSquareSize = Math.max(squareSize * ev.scale, minSquareSize)
-      document.documentElement.style.setProperty('--square-size', newSquareSize + 'vmax')
-
-      if (DEBUG) {
-        document.querySelector('.size').innerHTML = newSquareSize
-      }
-    })
-
-    mc.on('pinchend', function(ev) {
-      squareSize = currentSquareSize()
-    })
-  </script>
 </body>
 </html>
